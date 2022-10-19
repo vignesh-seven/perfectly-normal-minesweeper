@@ -1,7 +1,10 @@
 // constants
-const body =  document.body,
-              tbl = document.querySelector('.board');
+const body =  document.body
+const tbl = document.querySelector('.board')
 const size = 16
+
+const theRedColor = getComputedStyle(document.documentElement).getPropertyValue('--the-red');
+const theBGColor = getComputedStyle(document.documentElement).getPropertyValue('--the-background-color');
 
 // calculate size of the board
   const viewLength = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
@@ -75,10 +78,10 @@ function fillTheValues() {
       }
       
       // put the adjBombs value in the cell
-      if (adjBombs != 0) {
+      // if (adjBombs != 0) {
 
-        tbl.rows[i].cells[j].innerText = `${adjBombs}`;
-      }
+      //   tbl.rows[i].cells[j].innerText = `${adjBombs}`;
+      // }
       bombNumbers[i][j] = adjBombs
       
     }
@@ -88,20 +91,20 @@ function fillTheValues() {
 fillTheBombs()
 fillTheValues()
 
-console.table(bombValues)
-console.table(bombNumbers)
+// console.table(bombValues)  // important
+// console.table(bombNumbers) // important
 
 // on right-click event (flag)
 tbl.addEventListener('contextmenu', (e) => {
   e.preventDefault()
   // let cellX = getCellCordsX(cell), cellY = getCellCordsY(cell)
 
-  e.target.innerText = "F"
-  e.target.style.backgroundColor = 'white'
+  e.target.innerText = ""
+  e.target.style.backgroundColor= theRedColor
 })
 
 // on click event 
-tbl.addEventListener('click', (e) => {
+tbl.addEventListener('mousedown', (e) => {
   // e.preventDefault()
   let cellX = e.target.cellIndex
   let cellY = e.target.parentElement.rowIndex
@@ -112,11 +115,21 @@ tbl.addEventListener('click', (e) => {
     console.log("bomb exploded at X: " + cellX + " Y: " + cellY + " game over")
     
   } else {
-    console.log("you are safe")
+    console.log("you are safe (for now)")
+    e.target.innerText = bombNumbers[cellY][cellX];
+    if(bombNumbers[cellY][cellX] == 0) {
+      e.target.innerText = ""
+    }
   }
   
-  e.target.style.backgroundColor = 'red'
+
+  e.target.style.backgroundColor = theBGColor
+
 })
 
-
+// prevent drag & drop errors
+// tbl.addEventListener('dragstart drop', () => {
+//   e.preventDefault();
+//   return false;
+// })
 
