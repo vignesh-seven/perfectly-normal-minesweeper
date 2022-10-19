@@ -1,11 +1,11 @@
 // constants
 const body =  document.body,
               tbl = document.querySelector('.board');
-const size = 10
+const size = 16
 
 // calculate size of the board
   const viewLength = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
-  cellSize = (viewLength - 0.4 * viewLength) / 10
+  cellSize = (viewLength - 0.2 * viewLength) / size
 
 // 💣
 
@@ -48,6 +48,8 @@ function fillTheBombs() {  // cell creation also happens here
       td.classList.add("cell")
       td.style.width = `${cellSize}px`
       td.style.height = `${cellSize}px`
+      td.align = "center"
+
     }
   }
 }
@@ -73,7 +75,10 @@ function fillTheValues() {
       }
       
       // put the adjBombs value in the cell
-      tbl.rows[i].cells[j].innerText = `${adjBombs}`;
+      if (adjBombs != 0) {
+
+        tbl.rows[i].cells[j].innerText = `${adjBombs}`;
+      }
       bombNumbers[i][j] = adjBombs
       
     }
@@ -102,6 +107,8 @@ tbl.addEventListener('click', (e) => {
   let cellY = e.target.parentElement.rowIndex
 
   if(bombValues[cellY][cellX]) {
+
+    // game over
     console.log("bomb exploded at X: " + cellX + " Y: " + cellY + " game over")
     
   } else {
