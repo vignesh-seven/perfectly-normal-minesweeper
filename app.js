@@ -12,7 +12,7 @@ const size = 10
 
 
 // generating the board 
-const bombValues = []
+let bombValues = []
 
 for (let i=0; i<size; i++) {
   bombValues[i] = [];
@@ -28,7 +28,13 @@ for (let i = 0; i < size; i++) {
   }
 }
 
-console.table(bombValues)
+let bombNumbers = []
+for (let i=0; i<size; i++) {
+  bombNumbers[i] = [];
+}
+
+
+
 
 // generating the board and placing bombs
 function fillTheBombs() {  // cell creation also happens here
@@ -49,22 +55,38 @@ function fillTheBombs() {  // cell creation also happens here
 function fillTheValues() {  
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      
+      if (bombValues[i][j]) {
+        continue // skip if the current cell has a bomb
+      }
+
+      let adjBombs = 0
+
       // calculate the adjBombs
-      // put the adjBombs value in the cell
-      //td.appendChild(document.createTextNode(`💣`));
+      // i, j
+
+      for (a = i-1; a<i+2; a++) {
+        for (b = j-1; b<j+2; b++) {
+          if (a<0 || a>=size) { continue; }
+          if (b<0 || b>=size) { continue; }
+          if(bombValues[a][b]) { adjBombs++; }
+        }
+      }
       
-      td.classList.add("cell")
-      td.style.width = `${cellSize}px`
-      td.style.height = `${cellSize}px`
+      // put the adjBombs value in the cell
+      tbl.rows[i].cells[j].innerText = `${adjBombs}`;
+      bombNumbers[i][j] = adjBombs
+      
     }
   }
 }
 
-fillTheBombs();
+fillTheBombs()
+fillTheValues()
 
+console.table(bombValues)
+console.table(bombNumbers)
 
-// on right-click event
+// on right-click event (flag)
 tbl.addEventListener('contextmenu', (e) => {
   e.preventDefault()
   // let cellX = getCellCordsX(cell), cellY = getCellCordsY(cell)
@@ -73,7 +95,7 @@ tbl.addEventListener('contextmenu', (e) => {
   e.target.style.backgroundColor = 'white'
 })
 
-// on click event
+// on click event 
 tbl.addEventListener('click', (e) => {
   // e.preventDefault()
   let cellX = e.target.cellIndex
@@ -81,11 +103,11 @@ tbl.addEventListener('click', (e) => {
 
   if(bombValues[cellY][cellX]) {
     console.log("bomb exploded at X: " + cellX + " Y: " + cellY + " game over")
-    return
+    
   } else {
     console.log("you are safe")
   }
-
+  
   e.target.style.backgroundColor = 'red'
 })
 
