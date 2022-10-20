@@ -6,6 +6,8 @@ const size = 20
 const theRedColor = getComputedStyle(document.documentElement).getPropertyValue('--the-red');
 const theBGColor = getComputedStyle(document.documentElement).getPropertyValue('--the-background-color');
 
+let firstClick = true
+
 // sus shape locations 11 x 11
 const susShapeCords = [
   [0,2],
@@ -78,21 +80,24 @@ const susShapeCords = [
 let bombValues = []
 
 for (let i=0; i<size; i++) {
-  bombValues[i] = [false];
+  bombValues[i] = [];
 }
 
 // place the sus shape
-
-for (let i=0; i<susShapeCords.length; i++) {
-  bombValues[susShapeCords[i][0]][susShapeCords[i][1]] = true
+function placeSusShape(x, y) {
+  for (let i=0; i<susShapeCords.length; i++) {
+    bombValues[susShapeCords[i][0]][susShapeCords[i][1]] = true
+  }
 }
 
+// place the rest of the bombs
 for (let i = 0; i < size; i++) {
   for (let j = 0; j < size; j++) {
     if (bombValues[i][j]) { continue; }
     if (Math.random() < 0.1) {
       bombValues[i][j] = true
     }
+    if (bombValues[i][j] === undefined) { bombValues[i][j] = false }
   }
 }
 
@@ -110,13 +115,8 @@ function createTable() {  // cell creation also happens here
     const tr = tbl.insertRow();
     for (let j = 0; j < size; j++) {
       const td = tr.insertCell();
-      // place the bomb
-      if (bombValues[i][j]) {
+      td.innerText = ""
 
-         td.appendChild(document.createTextNode(`💣`));
-        td.style.backgroundColor = theRedColor
-        
-      }
       // td.classList.add("cell")
       td.style.width = `${cellSize}px`
       td.style.height = `${cellSize}px`
@@ -126,6 +126,18 @@ function createTable() {  // cell creation also happens here
     }
   }
 }
+
+function fillTheBombs() {
+  // place the bomb
+
+  if (bombValues[i][j]) {
+
+    // td.appendChild(document.createTextNode(`💣`));
+    td.style.backgroundColor = theRedColor
+    
+  }
+}
+
 // fill the rest of the board with values
 function fillTheValues() {  
   for (let i = 0; i < size; i++) {
@@ -159,7 +171,7 @@ function fillTheValues() {
 }
 
 createTable()
-fillTheValues()
+// fillTheValues()
 
 console.table(bombValues)  // important
 // console.table(bombNumbers) // important
@@ -175,6 +187,11 @@ tbl.addEventListener('contextmenu', (e) => {
 
 // on click event 
 tbl.addEventListener('mousedown', (e) => {
+
+  if (firstClick) {
+    fillTheValues()
+    firstClick = false
+  }
   // e.preventDefault()
   let cellX = e.target.cellIndex
   let cellY = e.target.parentElement.rowIndex
@@ -185,7 +202,8 @@ tbl.addEventListener('mousedown', (e) => {
     e.target.innerText = `💣`
     console.log("bomb exploded at X: " + cellX + " Y: " + cellY + " game over")
     
-  } else {
+  } 
+  if (!bombValues[cellY][cellX]) {
     console.log("you are safe (for now)")
     e.target.innerText = bombNumbers[cellY][cellX];
     if(bombNumbers[cellY][cellX] == 0) {
