@@ -80,15 +80,15 @@ const susShapeCords = [
 // arrays for storing stuff
 let bombCords = []
 for (let i=0; i<size; i++) {
-  bombCords[i] = new Array(size);
+  bombCords[i] = new Array(size).fill(false);
 }
 let bombNumbers = []
 for (let i=0; i<size; i++) {
   bombNumbers[i] = new Array(size);
 }
-let revealedCells = []
+let cellRevealed = []
 for (let i=0; i<size; i++) {
-  revealedCells[i] = new Array(size);
+  cellRevealed[i] = new Array(size).fill(false);
 }
 
 
@@ -126,7 +126,6 @@ function fillTheRemBombs() {
       if (Math.random() < 0.1) {
         bombCords[i][j] = true
       }
-      if (bombCords[i][j] === undefined) { bombCords[i][j] = false }
     }
   }
 
@@ -152,7 +151,7 @@ function fillTheValues() {
       let adjBombs = 0
 
       // calculate the adjBombs
-      // i, j
+      // 
 
       for (a = i-1; a<i+2; a++) {
         for (b = j-1; b<j+2; b++) {
@@ -162,18 +161,14 @@ function fillTheValues() {
         }
       }
       
-      // put the adjBombs value in the cell
-      // if (adjBombs != 0) {
-
-      //   tbl.rows[i].cells[j].innerText = `${adjBombs}`;
-      // }
       bombNumbers[i][j] = adjBombs
       
     }
   }
 }
 
-function checkAdjCells(x, y, source, target) {
+function checkAdjCellsAreBlank(x, y, source, target, result) {
+
   for (a = x-1; a<x+2; a++) {
     for (b = y-1; b<y+2; b++) {
       if (source == target) { return true; }
@@ -187,8 +182,10 @@ placeSusShape()
 fillTheRemBombs()
 fillTheValues()
 
-console.table(bombCords)  // important
+// console.table(bombCords)  // important
 // console.table(bombNumbers) // important
+// console.table(bombNumbers)
+console.table(cellRevealed)
 
 // on right-click event (flag)
 tbl.addEventListener('contextmenu', (e) => {
@@ -213,7 +210,7 @@ tbl.addEventListener('mousedown', (e) => {
   // e.target.innerText = `💣`
 
   if(bombCords[cellX][cellY]) {
-    console.log("bomb exploded at X: " + cellY + " Y: " + cellX + " game over")
+    console.log("GAME OVER: bomb at " + cellY + ", " + cellX )
     e.target.innerText = `💣`
     e.target.backgroundColor = theRedColor
     return
@@ -222,6 +219,7 @@ tbl.addEventListener('mousedown', (e) => {
   // blank cell condition
   if(bombNumbers[cellX][cellY] == 0) {
     console.log("empty cell")
+    cellRevealed[cellX][cellY] = true
     // return
   }
 
@@ -229,7 +227,6 @@ tbl.addEventListener('mousedown', (e) => {
   if (!bombCords[cellX][cellY]) {
     if(bombNumbers[cellX][cellY] > 0) {
       e.target.innerText = bombNumbers[cellX][cellY];
-      // e.target.innerText = ""
     }
   }
   
