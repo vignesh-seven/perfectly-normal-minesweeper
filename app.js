@@ -5,8 +5,9 @@ const size = 20
 
 const theRedColor = getComputedStyle(document.documentElement).getPropertyValue('--the-red');
 const theBGColor = getComputedStyle(document.documentElement).getPropertyValue('--the-background-color');
+const theBGColorDimmed = getComputedStyle(document.documentElement).getPropertyValue('--the-background-color-dimmed');
 
-let firstClick = true
+let firstClick = false
 
 // sus shape locations 11 x 11
 const susShapeCords = [
@@ -76,73 +77,75 @@ const susShapeCords = [
 // 💣
 
 
-// generating the board 
-let bombValues = []
-
+// arrays for storing stuff
+let bombCords = []
 for (let i=0; i<size; i++) {
-  bombValues[i] = [];
+  bombCords[i] = new Array(size);
 }
+let bombNumbers = []
+for (let i=0; i<size; i++) {
+  bombNumbers[i] = new Array(size);
+}
+let revealedCells = []
+for (let i=0; i<size; i++) {
+  revealedCells[i] = new Array(size);
+}
+
 
 // place the sus shape
 function placeSusShape(x, y) {
   for (let i=0; i<susShapeCords.length; i++) {
-    bombValues[susShapeCords[i][0]][susShapeCords[i][1]] = true
+    bombCords[susShapeCords[i][0]][susShapeCords[i][1]] = true
   }
 }
 
-// place the rest of the bombs
-for (let i = 0; i < size; i++) {
-  for (let j = 0; j < size; j++) {
-    if (bombValues[i][j]) { continue; }
-    if (Math.random() < 0.1) {
-      bombValues[i][j] = true
-    }
-    if (bombValues[i][j] === undefined) { bombValues[i][j] = false }
-  }
-}
-
-let bombNumbers = []
-for (let i=0; i<size; i++) {
-  bombNumbers[i] = [];
-}
 
 
 
 
-// generating the board and placing bombs
+
+// generating the board 
 function createTable() {  // cell creation also happens here
   for (let i = 0; i < size; i++) {
     const tr = tbl.insertRow();
     for (let j = 0; j < size; j++) {
       const td = tr.insertCell();
       td.innerText = ""
-
-      // td.classList.add("cell")
       td.style.width = `${cellSize}px`
       td.style.height = `${cellSize}px`
       td.align = "center"
-      // console.log(td.style.backgroundColor)
-
     }
   }
 }
 
-function fillTheBombs() {
-  // place the bomb
-
-  if (bombValues[i][j]) {
-
-    // td.appendChild(document.createTextNode(`💣`));
-    td.style.backgroundColor = theRedColor
-    
+function fillTheRemBombs() {
+// place the rest of the bombs
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      if (bombCords[i][j]) { continue; }
+      if (Math.random() < 0.1) {
+        bombCords[i][j] = true
+      }
+      if (bombCords[i][j] === undefined) { bombCords[i][j] = false }
+    }
   }
+
+  // place the bomb (FOR TESTING ONLY)
+  for (let i=0; i<size; i++) {
+    for (let j=0; j<size; j++) {
+      if (bombCords[i][j]) {
+        tbl.rows[i].cells[j].style.backgroundColor = theRedColor
+      }
+    }
+  }
+
 }
 
 // fill the rest of the board with values
 function fillTheValues() {  
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      if (bombValues[i][j]) {
+      if (bombCords[i][j]) {
         continue // skip if the current cell has a bomb
       }
 
@@ -155,7 +158,7 @@ function fillTheValues() {
         for (b = j-1; b<j+2; b++) {
           if (a<0 || a>=size) { continue; }
           if (b<0 || b>=size) { continue; }
-          if(bombValues[a][b]) { adjBombs++; }
+          if(bombCords[a][b]) { adjBombs++; }
         }
       }
       
@@ -170,17 +173,28 @@ function fillTheValues() {
   }
 }
 
-createTable()
-// fillTheValues()
+function checkAdjCells(x, y, source, target) {
+  for (a = x-1; a<x+2; a++) {
+    for (b = y-1; b<y+2; b++) {
+      if (source == target) { return true; }
+    }
+  }
+}
 
-console.table(bombValues)  // important
+
+createTable()
+placeSusShape()
+fillTheRemBombs()
+fillTheValues()
+
+console.table(bombCords)  // important
 // console.table(bombNumbers) // important
 
 // on right-click event (flag)
 tbl.addEventListener('contextmenu', (e) => {
   e.preventDefault()
-  // let cellX = getCellCordsX(cell), cellY = getCellCordsY(cell)
-
+  
+  // let cellY = getCellCordsX(cell), cellX = getCellCordsY(cell)
   e.target.innerText = ""
   e.target.style.backgroundColor= theRedColor
 })
@@ -192,27 +206,35 @@ tbl.addEventListener('mousedown', (e) => {
     fillTheValues()
     firstClick = false
   }
-  // e.preventDefault()
-  let cellX = e.target.cellIndex
-  let cellY = e.target.parentElement.rowIndex
+  let cellX = e.target.parentElement.rowIndex
+  let cellY = e.target.cellIndex
 
-  if(bombValues[cellY][cellX]) {
+  // game over condition
+  // e.target.innerText = `💣`
 
-    // game over
+  if(bombCords[cellX][cellY]) {
+    console.log("bomb exploded at X: " + cellY + " Y: " + cellX + " game over")
     e.target.innerText = `💣`
-    console.log("bomb exploded at X: " + cellX + " Y: " + cellY + " game over")
-    
+    e.target.backgroundColor = theRedColor
+    return
   } 
-  if (!bombValues[cellY][cellX]) {
-    console.log("you are safe (for now)")
-    e.target.innerText = bombNumbers[cellY][cellX];
-    if(bombNumbers[cellY][cellX] == 0) {
-      e.target.innerText = ""
+
+  // blank cell condition
+  if(bombNumbers[cellX][cellY] == 0) {
+    console.log("empty cell")
+    // return
+  }
+
+  // cell contains a value condition 
+  if (!bombCords[cellX][cellY]) {
+    if(bombNumbers[cellX][cellY] > 0) {
+      e.target.innerText = bombNumbers[cellX][cellY];
+      // e.target.innerText = ""
     }
   }
   
 
-  e.target.style.backgroundColor = theBGColor
+  e.target.style.backgroundColor = theBGColorDimmed
 
 })
 
