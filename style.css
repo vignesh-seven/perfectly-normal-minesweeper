@@ -12,20 +12,22 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  background-color: var(--the-background-color);
 }
 
 .board {
   border-collapse: collapse;
-  
 }
-
+table td{
+  border: 1px solid blue;
+}
 
 /* .cell {
   background-color: var(--backgroundColor);
 
 } */
 
-td:hover {
+/* td:hover {
   background-color: gray;
-}
+} */
 
