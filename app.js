@@ -112,20 +112,20 @@ function placeSusShape(x, y) {
 
   let susCords = generateSusCords()
   
-  let validPosition = false
+  // let validPosition = false
   
-  while (!validPosition) {
-    susCords = generateSusCords()
-    for (let i=0; i<susShapeCords.length; i++) {
-      validPosition = true
-      if (susCords[0] + susShapeCords[i][0] == clickX && susCords[1] + susShapeCords[i][1] == clickY) {
-        validPosition = false
-        // continue
-      }
-      // break
-    }
-    // break
-  }
+  // while (!validPosition) {
+  //   susCords = generateSusCords()
+  //   for (let i=0; i<susShapeCords.length; i++) {
+  //     validPosition = true
+  //     if (susCords[0] + susShapeCords[i][0] == clickX && susCords[1] + susShapeCords[i][1] == clickY) {
+  //       validPosition = false
+  //       // continue
+  //     }
+  //     // break
+  //   }
+  //   // break
+  // }
   
   // console.log(susCords)
   
@@ -133,6 +133,7 @@ function placeSusShape(x, y) {
   for (let i=0; i<susShapeCords.length; i++) {
     bombCords[susCords[0] + susShapeCords[i][0]][susCords[1] + susShapeCords[i][1]] = true
   }
+  bombCords[x][y] = false
 }
 
 // generating the board 
