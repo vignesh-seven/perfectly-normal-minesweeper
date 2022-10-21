@@ -77,6 +77,8 @@ cellSize = (viewLength - 0.2 * viewLength) / size
 
 
 // arrays for storing stuff
+let susCords = []
+
 let bombCords = []
 for (let i=0; i<size; i++) {
   bombCords[i] = new Array(size).fill(false);
@@ -110,7 +112,7 @@ function placeSusShape(x, y) {
   let clickX = x
   let clickY = y
 
-  let susCords = generateSusCords()
+  susCords = generateSusCords()
   
   // let validPosition = false
   
@@ -134,6 +136,8 @@ function placeSusShape(x, y) {
     bombCords[susCords[0] + susShapeCords[i][0]][susCords[1] + susShapeCords[i][1]] = true
   }
   bombCords[x][y] = false
+
+  return susCords
 }
 
 // generating the board 
@@ -150,11 +154,13 @@ function createTable() {  // cell creation also happens here
   }
 }
 
-function fillTheRemBombs(x, y) {
+function fillTheRemBombs(x, y, susCords) {
 // place the rest of the bombs
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       if (bombCords[i][j] || (i==x && j==y)) { continue; }
+      if (i> susCords[0] && i<susCords[0] + 12
+        && j> susCords[1] && j<susCords[1] + 12) { continue; }
       if (Math.random() < 0.1) {
         bombCords[i][j] = true
       }
@@ -277,7 +283,7 @@ tbl.addEventListener('click', (e) => {
   if (firstClick) {
     // tryToPlaceSusShape(cellX, cellY)
     placeSusShape(cellX, cellY)
-    fillTheRemBombs(cellX, cellY)
+    fillTheRemBombs(cellX, cellY, susCords)
     fillTheValues()
     firstClick = false
   }
