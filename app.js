@@ -161,21 +161,24 @@ function fillTheRemBombs(x, y, susCords) {
       if (bombCords[i][j] || (i==x && j==y)) { continue; }
       if (i> susCords[0] && i<susCords[0] + 12
         && j> susCords[1] && j<susCords[1] + 12) { continue; }
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.06) {
         bombCords[i][j] = true
       }
     }
   }
+}
 
-  // place the bomb (FOR TESTING ONLY)
-  for (let i=0; i<size; i++) {
-    for (let j=0; j<size; j++) {
-      if (bombCords[i][j]) {
-        tbl.rows[i].cells[j].style.backgroundColor = theRedColor
-      }
+function showBombPlaces() {
+// place the bomb (FOR TESTING ONLY)
+for (let i=0; i<size; i++) {
+  for (let j=0; j<size; j++) {
+    if (bombCords[i][j]) {
+      tbl.rows[i].cells[j].style.backgroundColor = theRedColor
     }
   }
 }
+}
+
 
 // fill the rest of the board with values
 function fillTheValues() {  
@@ -258,18 +261,19 @@ tbl.addEventListener('contextmenu', (e) => {
   if (cellRevealed[cellX][cellY]) {
     return
   }
-
+  if (cellRevealed[cellX][cellY] && bombCords[cellX][cellY]) {
+    return
+  }
   if (flagged[cellX][cellY]) {
     flagged[cellX][cellY] = false
-    e.target.innerText = ""
-    
+    // e.target.innerText = ""
     e.target.style.backgroundColor= theBGColor
     return
   }
   flagged[cellX][cellY] = true
   console.table(flagged)
 
-  e.target.innerText = ""
+  // e.target.innerText = ""
   e.target.style.backgroundColor= theRedColor
 })
 
@@ -294,6 +298,7 @@ tbl.addEventListener('click', (e) => {
     console.log("GAME OVER: bomb at " + cellY + ", " + cellX )
     e.target.innerText = `💣`
     e.target.backgroundColor = theRedColor
+    cellRevealed[cellX][cellY] = true
     return
   } 
 
@@ -311,6 +316,7 @@ tbl.addEventListener('click', (e) => {
       revealCell(cellX, cellY)
     }
   }
+  cellRevealed[cellX][cellY] = true
 })
 
 
