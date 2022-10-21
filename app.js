@@ -192,7 +192,7 @@ function revealSafeCells(x, y) {
 }
 
 function revealCell(x, y) {
-  tbl.rows[x].cells[y].style.backgroundColor = "grey"
+  tbl.rows[x].cells[y].style.backgroundColor = theBGColorDimmed
   if (bombNumbers[x][y] > 0 ) {
     tbl.rows[x].cells[y].innerText = bombNumbers[x][y];
   }
