@@ -123,7 +123,7 @@ function fillTheRemBombs() {
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       if (bombCords[i][j]) { continue; }
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.2) {
         bombCords[i][j] = true
       }
     }
@@ -144,9 +144,9 @@ function fillTheRemBombs() {
 function fillTheValues() {  
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      if (bombCords[i][j]) {
-        continue // skip if the current cell has a bomb
-      }
+      // if (bombCords[i][j]) {
+      //   bombNumbers[i][j] =  // skip if the current cell has a bomb
+      // }
 
       let adjBombs = 0
 
@@ -167,15 +167,86 @@ function fillTheValues() {
   }
 }
 
-function checkAdjCellsAreBlank(x, y, source, target, result) {
+function revealSafeCells(x, y) {
 
-  for (a = x-1; a<x+2; a++) {
-    for (b = y-1; b<y+2; b++) {
-      if (source == target) { return true; }
-    }
+  // check if current position breaks any of the position constraints 
+  if(x<0 || y<0 || x>=size || y>=size || cellRevealed[x][y] || bombCords[x][y]) { return; }
+
+  // sink the current land
+  cellRevealed[x][y] = true;
+
+  // reveal the current cell
+  console.log('run')
+  revealCell(x, y)
+
+  // skip if the current cell has bombs near it
+  if (bombNumbers[x][y] > 0) {
+    return
   }
-}
 
+  // check top
+  revealSafeCells(x-1,y);
+
+  // check right
+  revealSafeCells(x,y+1);
+
+  // check bottom
+  revealSafeCells(x+1,y);
+
+  //check left
+  revealSafeCells(x,y-1);
+
+  
+  
+  // if (!cellRevealed[x][y]) {
+  //   cellRevealed[x][y] = true
+
+    
+  //   for (let a = x-1; a<x+2; a++) {
+  //     for (let b = y-1; b<y+2; b++) {
+  //       if (a<0 || a>=size) { continue; }
+  //       if (b<0 || b>=size) { continue; }
+  //       // if(bombCords[a][b]) { adjBombs++; }
+        
+  //       if(bombCords[a][b]) { return; }
+
+  //       if (!bombCords[x][y] && bombNumbers[x][y] >= 0) {
+  //         revealCell(x, y)
+  //       }
+  //       if (bombNumbers[x][y] >= 0) {
+  //         revealSafeCells(a, b)
+  //       }
+  //     }
+  //   }
+
+  //   // for(let nx = Math.max(x - 1, 0); nx < size && nx <= x + 1; nx++) {
+  //   //   for(let ny = Math.max(y - 1, 0); ny < size && ny <= y + 1; ny++) {
+  //   //     revealSafeCells(nx, ny)
+  //   //   }
+  //   // }
+  // }
+}
+// function checkAdjCellsAreBlank(x, y) {
+//   let adjCells = []
+
+//   for (a = x-1; a<x+2; a++) {
+//     for (b = y-1; b<y+2; b++) {
+//       if(bombCords[a][b]) {
+//         adjCells.push(new Array(a, b))
+//       }
+//     }
+//   }
+
+//   return adjCells
+// }
+
+function revealCell(x, y) {
+  tbl.rows[x].cells[y].style.backgroundColor = "grey"
+  if (bombNumbers[x][y] > 0 ) {
+    tbl.rows[x].cells[y].innerText = bombNumbers[x][y];
+  }
+
+}
 
 createTable()
 placeSusShape()
@@ -186,6 +257,7 @@ fillTheValues()
 // console.table(bombNumbers) // important
 // console.table(bombNumbers)
 console.table(cellRevealed)
+console.table(bombNumbers)
 
 // on right-click event (flag)
 tbl.addEventListener('contextmenu', (e) => {
@@ -219,19 +291,31 @@ tbl.addEventListener('mousedown', (e) => {
   // blank cell condition
   if(bombNumbers[cellX][cellY] == 0) {
     console.log("empty cell")
-    cellRevealed[cellX][cellY] = true
+    
+    revealSafeCells(cellX, cellY)
+    // let adjBlankCells = checkAdjCellsAreBlank(cellX, cellY)
+
+    // for (i=0; i<adjBlankCells.length; i++) {
+    //   if (!cellRevealed[cellX][cellY]) {
+    //     cellRevealed[adjBlankCells[i][0]][adjBlankCells[i][1]] = true
+    //   }
+
+    // }
+
+    // cellRevealed[cellX][cellY] = true
     // return
+    // console.table(adjCells)
   }
 
   // cell contains a value condition 
   if (!bombCords[cellX][cellY]) {
     if(bombNumbers[cellX][cellY] > 0) {
-      e.target.innerText = bombNumbers[cellX][cellY];
+      revealCell(cellX, cellY)
     }
   }
   
 
-  e.target.style.backgroundColor = theBGColorDimmed
+  // e.target.style.backgroundColor = theBGColorDimmed
 
 })
 
