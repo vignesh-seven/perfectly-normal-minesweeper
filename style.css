@@ -11,9 +11,16 @@
 body {
   margin: 0;
   padding: 0;
+  /* height: 100%; */
   box-sizing: border-box;
   background-color: var(--the-background-color);
+
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 .board {
   border-collapse: collapse;

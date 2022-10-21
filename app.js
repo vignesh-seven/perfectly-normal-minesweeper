@@ -7,8 +7,7 @@ const theRedColor = getComputedStyle(document.documentElement).getPropertyValue(
 const theBGColor = getComputedStyle(document.documentElement).getPropertyValue('--the-background-color');
 const theBGColorDimmed = getComputedStyle(document.documentElement).getPropertyValue('--the-background-color-dimmed');
 
-let firstClick = false
-
+let firstClick = true
 // sus shape locations 11 x 11
 const susShapeCords = [
   [0,2],
@@ -71,8 +70,8 @@ const susShapeCords = [
 
 
 // calculate size of the board
-  const viewLength = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
-  cellSize = (viewLength - 0.2 * viewLength) / size
+const viewLength = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
+cellSize = (viewLength - 0.2 * viewLength) / size
 
 // 💣
 
@@ -90,19 +89,51 @@ let cellRevealed = []
 for (let i=0; i<size; i++) {
   cellRevealed[i] = new Array(size).fill(false);
 }
+let flagged = []
+for (let i=0; i<size; i++) {
+  flagged[i] = new Array(size).fill(false);
+}
 
+function generateSusCords() {
 
-// place the sus shape
-function placeSusShape(x, y) {
-  for (let i=0; i<susShapeCords.length; i++) {
-    bombCords[susShapeCords[i][0]][susShapeCords[i][1]] = true
-  }
+  let placeX = Math.floor(Math.random() * (size - 12))
+  let placeY = Math.floor(Math.random() * (size - 12))
+
+  let resultCords = [placeX, placeY]  
+  return resultCords
 }
 
 
 
+// place the sus shape
+function placeSusShape(x, y) {
+  let clickX = x
+  let clickY = y
 
+  let susCords = generateSusCords()
+  
+  let validPosition = false
+  
+  while (!validPosition) {
+    susCords = generateSusCords()
+    for (let i=0; i<susShapeCords.length; i++) {
+      validPosition = true
+      if (susCords[0] + susShapeCords[i][0] == clickX && susCords[1] + susShapeCords[i][1] == clickY) {
+        validPosition = false
+        // continue
+      }
+      // break
+    }
+    // break
+  }
+  
+  // console.log(susCords)
+  
 
+  for (let i=0; i<susShapeCords.length; i++) {
+    bombCords[susCords[0] + susShapeCords[i][0]][susCords[1] + susShapeCords[i][1]] = true
+  }
+}
 
 // generating the board 
 function createTable() {  // cell creation also happens here
@@ -118,11 +149,11 @@ function createTable() {  // cell creation also happens here
   }
 }
 
-function fillTheRemBombs() {
+function fillTheRemBombs(x, y) {
 // place the rest of the bombs
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      if (bombCords[i][j]) { continue; }
+      if (bombCords[i][j] || (i==x && j==y)) { continue; }
       if (Math.random() < 0.1) {
         bombCords[i][j] = true
       }
@@ -137,7 +168,6 @@ function fillTheRemBombs() {
       }
     }
   }
-
 }
 
 // fill the rest of the board with values
@@ -165,7 +195,7 @@ function fillTheValues() {
 function revealSafeCells(x, y) {
 
   // check if current position breaks any of the position constraints 
-  if(x<0 || y<0 || x>=size || y>=size || cellRevealed[x][y] || bombCords[x][y]) { return; }
+  if(x<0 || y<0 || x>=size || y>=size || cellRevealed[x][y] || bombCords[x][y] || flagged[x][y]) { return; }
 
   // sink the current land
   cellRevealed[x][y] = true;
@@ -200,9 +230,9 @@ function revealCell(x, y) {
 }
 
 createTable()
-placeSusShape()
-fillTheRemBombs()
-fillTheValues()
+// placeSusShape()
+// fillTheRemBombs()
+// fillTheValues()
 
 // console.table(bombCords)  // important
 // console.table(bombNumbers) // important
@@ -213,21 +243,43 @@ fillTheValues()
 // on right-click event (flag)
 tbl.addEventListener('contextmenu', (e) => {
   e.preventDefault()
+  let cellX = e.target.parentElement.rowIndex
+  let cellY = e.target.cellIndex
   
   // let cellY = getCellCordsX(cell), cellX = getCellCordsY(cell)
+
+  if (cellRevealed[cellX][cellY]) {
+    return
+  }
+
+  if (flagged[cellX][cellY]) {
+    flagged[cellX][cellY] = false
+    e.target.innerText = ""
+    
+    e.target.style.backgroundColor= theBGColor
+    return
+  }
+  flagged[cellX][cellY] = true
+  console.table(flagged)
+
   e.target.innerText = ""
   e.target.style.backgroundColor= theRedColor
 })
 
 // on click event 
-tbl.addEventListener('mousedown', (e) => {
+tbl.addEventListener('click', (e) => {
 
+  let cellX = e.target.parentElement.rowIndex
+  let cellY = e.target.cellIndex
+
+  // console.log(cellX)
   if (firstClick) {
+    // tryToPlaceSusShape(cellX, cellY)
+    placeSusShape(cellX, cellY)
+    fillTheRemBombs(cellX, cellY)
     fillTheValues()
     firstClick = false
   }
-  let cellX = e.target.parentElement.rowIndex
-  let cellY = e.target.cellIndex
 
   // game over condition
 
