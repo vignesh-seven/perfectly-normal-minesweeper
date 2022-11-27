@@ -7,13 +7,22 @@
   <title>Perfectly Normal Minesweeper</title>
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="colors.css">
+  <link rel="icon" type="image/x-icon" href="./fav.ico">
 </head>
 <body>
-  <div class="board-div">
-    <table class="board" draggable="false">
-
-    </table>
+  <div class="container">
+    <div class="board-div">
+      <table class="board" draggable="false">
+      </table>
+    </div>
+    <!-- <div class="control-space" onclick="reloadPage()">
+      <p>Click on a tile to start!</p>
+    </div> -->
+    <div class="controls controls-start">
+      <button id="start-button" onclick="startGame()">Start</button>
+    </div>
+    
+    <script src="./app.js"></script>
   </div>
-  <script src="./app.js"></script>
 </body>
 </html>
