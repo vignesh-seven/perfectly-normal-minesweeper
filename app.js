@@ -1,7 +1,7 @@
 function startGame() {
 
 
-  document.querySelector(".controls-start").style.display = "none"
+  document.querySelector(".controls-start").classList.add("hidden-class")
 
 
   // constants
@@ -243,6 +243,9 @@ function startGame() {
       tbl.rows[x].cells[y].innerText = bombNumbers[x][y];
     }
 
+  }
+  function gameOver() {
+    document.querySelector(".controls-end").classList.remove("hidden-class")
   }
 
   createTable()

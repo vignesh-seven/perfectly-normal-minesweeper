@@ -68,13 +68,17 @@ table td{
   height: 100%;
   top: 0;
   left: 0;
-  background-color: var(--the-background-color);
+  background-color: rgba(255, 255, 255, 0.6);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* background-blend-mode: lighten; */
 }
 
+.controls h1 {
+  -webkit-text-stroke: 1px white;
+}
 
 #control-button {
   width: 15%;
@@ -92,3 +96,6 @@ table td{
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+.hidden-class {
+  display: none;
+}
