@@ -19,7 +19,12 @@
       <p>Click on a tile to start!</p>
     </div> -->
     <div class="controls controls-start">
-      <button id="start-button" onclick="startGame()">Start</button>
+      <h1 style="font-family: sans-serif">Perfectly Normal Minesweeper</h1>
+      <button id="control-button" onclick="startGame()">Start</button>
+    </div>
+    <div class="controls controls-end" style="display: none" >
+      <h1 style="font-family: sans-serif">Game Over!</h1>
+      <button id="control-button" onclick="reloadPage()">Restart</button>
     </div>
     
     <script src="./app.js"></script>

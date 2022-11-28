@@ -70,17 +70,25 @@ table td{
   left: 0;
   background-color: var(--the-background-color);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-#start-button {
-  width: 25%;
+
+#control-button {
+  width: 15%;
   height: 10%;
-
   font-size: 1.5em;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--the-background-color-dimmed);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  transition: all 0.4s ease;
+  margin-top: 5vh;
 }
 
-.controls-restart {
-  display: none;
+#control-button:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
+
