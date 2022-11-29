@@ -18,13 +18,17 @@
     <!-- <div class="control-space" onclick="reloadPage()">
       <p>Click on a tile to start!</p>
     </div> -->
-    <div class="controls controls-start">
-      <h1 style="font-family: sans-serif">Perfectly Normal Minesweeper</h1>
-      <button id="control-button" onclick="startGame()">Start</button>
+    <div class="controls-wrapper controls-start">
+      <div class="controls ">
+        <p style="font-family: sans-serif">Perfectly Normal Minesweeper</p>
+        <button id="control-button" onclick="startGame()">Start</button>
+      </div>
     </div>
-    <div class="controls controls-end hidden-class">
-      <h1 style="font-family: sans-serif">Game Over!</h1>
-      <button id="control-button" onclick="reloadPage()">Restart</button>
+    <div class="controls-wrapper controls-end hidden-class">
+      <div class="controls ">
+        <p style="font-family: sans-serif">Game Over!</p>
+        <button id="control-button" onclick="reloadPage()">Restart</button>
+      </div>
     </div>
     
     <script src="./app.js"></script>

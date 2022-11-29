@@ -314,7 +314,7 @@ function startGame() {
 
       showBombPlaces()
       gameOver()
-      tbl.classList.add("disable-clicks")
+      // tbl.classList.add("disable-clicks")
       return
     }
 

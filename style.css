@@ -23,6 +23,7 @@ body {
   align-items: center;
   justify-content: center;
   flex-flow: column;
+  
 }
 .board-div {
   flex: 0 1 auto;
@@ -35,55 +36,46 @@ table td{
   border: 1px solid rgba(0, 0, 0, 0.3)
 }
 
-/* .cell {
-  background-color: var(--backgroundColor);
-
-} */
-
-/* td:hover {
-  background-color: gray;
-} */
 .disable-clicks {
   pointer-events: none;
 }
-/* .control-space {
-  margin-top: 2vh;
-  width: 100%;
-  text-align: center;
-  background-color: aqua;
-  flex: 1 1 auto;
-}
 
-
-.control-space p {
-  margin: auto auto;
-  width: 200px;
-  font-size: 1.2em;
-  /* line-height: 2em;  
-} */
-
-.controls {
+.controls-wrapper {
   position: absolute;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
-  background-color: rgba(255, 255, 255, 0.6);
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* background-blend-mode: lighten; */
+  /* background-color: blue; */
 }
 
-.controls h1 {
-  -webkit-text-stroke: 1px white;
+
+.controls {
+  width: max-content;
+  height: 20vh;
+  background-color: var(--the-background-color-dimmed);
+  
+  /* justify-self: center; */
+  /* background-blend-mode: lighten; */
+  text-align: center;
+  padding: 5%;
+  border-radius: 30px;
+}
+
+.controls p {
+  font-size: 150%;
+  font-weight: bold;
 }
 
 #control-button {
-  width: 15%;
-  height: 10%;
-  font-size: 1.5em;
+  /* width: 40%; */
+  width: 200px;
+  height: 30%;
+  font-size: 120%;
   border: none;
   border-radius: 10px;
   background-color: var(--the-background-color-dimmed);
